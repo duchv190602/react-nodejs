@@ -1,0 +1,57 @@
+import bcrypt from "bcryptjs";
+import mysql from "mysql2/promise";
+import bluebird from "bluebird";
+
+
+const hashPassword = (userPassword) => {
+  const salt = bcrypt.genSaltSync(10);
+  const hashPass = bcrypt.hashSync(userPassword, salt);
+  console.log("Check hashPass: ", hashPass);
+  return hashPass;
+}
+const createNewUser = (email, password, username) => {
+  let hashPass = hashPassword(password);
+  connection.query(
+    'INSERT INTO users (email, password, username) VALUES (?, ?, ?)',
+    [email, hashPass, username],
+    function (err, results, fields) {
+      console.log("Check error: ", err);
+      console.log(results); // results contains rows returned by server
+    }
+  );
+}
+
+const getUserList = async () => {
+  const connection = await mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "root",
+  database: "learn_nodejs",
+  Promise : bluebird 
+});
+  let users = [];
+  //  connection.query(
+  //   'SELECT * FROM users',
+  //   function (err, results, fields) {
+  //     if (err) {
+  //       return users;
+  //     }
+  //     users = results;
+  //     console.log("Check users: ", users);
+  //     return users;
+  //   }
+  // );
+  try {
+    const [rows, fields] = await connection.execute('SELECT * FROM users');
+
+    return rows;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export default {
+  createNewUser,
+  getUserList,
+};

@@ -12,7 +12,7 @@ const initWebRoutes = (app) => {
   router.get("/user", homeController.handleUserPage); 
   // webstite bắt đầu sau dấu /, ví dụ: localhost:8080/about thì sẽ vào router.get("/about")
   router.post("/users/create-user", homeController.handleCreateNewUser);
-
+  router.post("/delete-user/:userId", homeController.handleDeleteUser);
   app.use("/", router);
 }
 export default initWebRoutes;

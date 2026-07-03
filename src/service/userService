@@ -9,41 +9,56 @@ const hashPassword = (userPassword) => {
   console.log("Check hashPass: ", hashPass);
   return hashPass;
 }
-const createNewUser = (email, password, username) => {
+const createNewUser = async (email, password, username) => {
   let hashPass = hashPassword(password);
-  connection.query(
-    'INSERT INTO users (email, password, username) VALUES (?, ?, ?)',
-    [email, hashPass, username],
-    function (err, results, fields) {
-      console.log("Check error: ", err);
-      console.log(results); // results contains rows returned by server
-    }
-  );
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: "learn_nodejs",
+    Promise: bluebird
+  });
+  try {
+    const [rows, fields] = await connection.execute(
+      'INSERT INTO users (email, password, username) VALUES (?, ?, ?)',
+      [email, hashPass, username]
+    );
+    console.log("Check rows: ", rows);
+    return rows;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+
 }
 
 const getUserList = async () => {
   const connection = await mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "learn_nodejs",
-  Promise : bluebird 
-});
-  let users = [];
-  //  connection.query(
-  //   'SELECT * FROM users',
-  //   function (err, results, fields) {
-  //     if (err) {
-  //       return users;
-  //     }
-  //     users = results;
-  //     console.log("Check users: ", users);
-  //     return users;
-  //   }
-  // );
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: "learn_nodejs",
+    Promise: bluebird
+  });
   try {
     const [rows, fields] = await connection.execute('SELECT * FROM users');
 
+    return rows;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+const deleteUser = async (userId) => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: "learn_nodejs",
+    Promise: bluebird
+  });
+  try {
+    const [rows, fields] = await connection.execute('DELETE FROM users WHERE id = ?', [userId]);
     return rows;
   } catch (error) {
     console.log(error);
@@ -54,4 +69,5 @@ const getUserList = async () => {
 export default {
   createNewUser,
   getUserList,
+  deleteUser
 };

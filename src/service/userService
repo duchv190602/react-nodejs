@@ -65,9 +65,46 @@ const deleteUser = async (userId) => {
     throw error;
   }
 }
+const getUserById = async (userId) => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: "learn_nodejs",
+    Promise: bluebird
+  });
+  try {
+    const [rows, fields] = await connection.execute('SELECT * FROM users WHERE id = ?', [userId]);
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+const updateUser = async (userId, email, username) => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: "learn_nodejs",
+    Promise: bluebird
+  });
+  try {
+    const [rows, fields] = await connection.execute(
+      'UPDATE users SET email = ?, username = ? WHERE id = ?',
+      [email, username, userId]
+    );
+    return rows;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 export default {
   createNewUser,
   getUserList,
-  deleteUser
+  deleteUser,
+  getUserById,
+  updateUser
 };

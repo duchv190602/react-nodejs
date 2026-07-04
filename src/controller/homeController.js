@@ -21,9 +21,29 @@ const handleDeleteUser = async (req, res) => {
   console.log("Check userId: ", userId);
   return res.redirect("/user");
 }
+const getUpdateUserPage = async (req, res) => {
+  let userId = req.params.userId;
+  console.log("Check userId: ", userId);
+  // Lấy thông tin người dùng từ cơ sở dữ liệu dựa trên userId
+  let user = await userService.getUserById(userId);
+  // Ví dụ: const user = await userService.getUserById(userId);
+  // Sau đó, render trang cập nhật người dùng với thông tin người dùng
+
+  console.log("Check user: ", user);
+  return res.render("user-update.ejs", { user });
+}
+const handleUpdateUser = async (req, res) => {
+  let userId = req.body.userId;
+  let email = req.body.email;
+  let username = req.body.username;
+  await userService.updateUser(userId, email, username);
+  return res.redirect("/user");
+}
 export default {
   hanldeHelloWorld,
   handleUserPage,
   handleCreateNewUser,
   handleDeleteUser,
+  getUpdateUserPage,
+  handleUpdateUser
 };

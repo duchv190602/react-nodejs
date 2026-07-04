@@ -4,7 +4,7 @@ import initWebRoutes from "./routes/web";
 // load biến môi trường từ file .env
 require("dotenv").config();
 import bodyParser from "body-parser";
-
+import connection from "./config/connectDB";
 
 const app = express();
 // config view engine
@@ -12,6 +12,9 @@ configViewEngine(app);
 // config body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//test db
+connection();
 
 // init web routes
 initWebRoutes(app);
